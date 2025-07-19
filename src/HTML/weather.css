@@ -1,0 +1,78 @@
+ body {
+      margin: 0;
+      background: #f7fafc;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      padding: 40px 0;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .big-box {
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: 0 2px 12px #0001;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .weather-cards {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .weather-card {
+      background: #edf6fa;
+      border-radius: 16px;
+      box-shadow: 0 1px 6px #0001;
+      padding: 20px 18px;
+      min-width: 150px;
+      flex: 1 1 160px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      transition: transform 0.12s;
+    }
+    .weather-card:hover {
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 4px 16px #0002;
+    }
+    .city {
+      font-weight: 600;
+      font-size: 1.15em;
+    }
+    .temp {
+      font-size: 1.7em;
+      font-weight: 700;
+      color: #2b7de9;
+    }
+    .weather-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 1em;
+    }
+    .weather-icon {
+      width: 32px;
+      height: 32px;
+      vertical-align: middle;
+    }
+    .map-section {
+      margin-top: 8px;
+      width: 100%;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px #0001;
+    }
+    .map-section img {
+      width: 100%;
+      display: block;
+      min-height: 220px;
+      object-fit: cover;
+      background: #e0e5eb;
+    }

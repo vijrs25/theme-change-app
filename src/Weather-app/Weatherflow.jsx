@@ -51,12 +51,8 @@ function WeatherByCity() {
             <strong>{weather.current.temp_c}°C</strong> - {weather.current.condition.text}
           </p>
           <ul style={{ listStyle: "none", padding: 0 }}>
-            <li><strong>Epoch Time:</strong> {weather.current.last_updated_epoch}</li>
             <li><strong>Last Updated:</strong> {weather.current.last_updated}</li>
             <li><strong>Temp (°C):</strong> {weather.current.temp_c}</li>
-            <li><strong>Temp (°F):</strong> {weather.current.temp_f}</li>
-            <li><strong>Feels Like (°C):</strong> {weather.current.feelslike_c}</li>
-            <li><strong>Feels Like (°F):</strong> {weather.current.feelslike_f}</li>
             <li><strong>Is Day:</strong> {weather.current.is_day === 1 ? "Yes" : "No"}</li>
             <li><strong>Weather Description:</strong> {weather.current.condition.text}</li>
             <li><strong>Weather Icon:</strong> <img src={weather.current.condition.icon} alt="icon" /></li>
@@ -65,12 +61,26 @@ function WeatherByCity() {
             <li><strong>Precipitation (in):</strong> {weather.current.precip_in}</li>
             <li><strong>Humidity:</strong> {weather.current.humidity}%</li>
             <li><strong>Cloud Cover:</strong> {weather.current.cloud}%</li>
-            <li><strong>Wind (mph):</strong> {weather.current.wind_mph}</li>
+            <li><strong>Weather condition :</strong> {weather.current.condition.text}</li>
             <li><strong>Wind (kph):</strong> {weather.current.wind_kph}</li>
             <li><strong>Wind Degree:</strong> {weather.current.wind_degree}°</li>
             <li><strong>Wind Direction:</strong> {weather.current.wind_dir}</li>
-            <li><strong>Visibility (km):</strong> {weather.current.vis_km}</li>
+            <li><strong>Visibility (km):</strong> {weather.forecast.forecastday[0].day.mintemp_c}</li>
+             <li><strong>Min Temp (°C):</strong> {weather.forecast.forecastday[0].day.mintemp_c}</li>
+              <li><strong>Max Temp (°C):</strong> {weather.forecast.forecastday[0].day.maxtemp_c}</li>
           </ul>
+          {weather.forecast &&
+  weather.forecast.forecastday &&
+  weather.forecast.forecastday.length > 0 && (
+    <>
+      <li>
+        <strong>Min Temp (°C):</strong> {weather.forecast.forecastday[0].day.mintemp_c}
+      </li>
+      <li>
+        <strong>Max Temp (°C):</strong> {weather.forecast.forecastday[0].day.maxtemp_c}
+      </li>
+    </>
+  )}
         </div>
       )}
     </div>

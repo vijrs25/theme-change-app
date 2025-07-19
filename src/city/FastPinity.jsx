@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -28,27 +28,36 @@ function CityMap() {
   const [coords, setCoords] = useState(DEFAULT_COORDS);
   const [error, setError] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+  const [query, setQuery] = useState("Nashik");
+  const debounceTimeout = useRef();
 
-  // Fetch city suggestions for autocomplete
-  const fetchSuggestions = async (value) => {
-    setError("");
-    setCity(value);
-    if (value.length < 2) {
+  // Debounced suggestions fetch
+  useEffect(() => {
+    if (query.length < 2) {
       setSuggestions([]);
       return;
     }
-    try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(value)}&addressdetails=1&limit=5`
-      );
-      const data = await res.json();
-      setSuggestions(data);
-    } catch {
-      setSuggestions([]);
-    }
+    if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
+    debounceTimeout.current = setTimeout(async () => {
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&addressdetails=1&limit=5`
+        );
+        const data = await res.json();
+        setSuggestions(data);
+      } catch {
+        setSuggestions([]);
+      }
+    }, 350);
+    return () => clearTimeout(debounceTimeout.current);
+  }, [query]);
+
+  const handleInputChange = (value) => {
+    setCity(value);
+    setQuery(value);
+    setError("");
   };
 
-  // When user clicks a suggestion, update map
   const handleSuggestionClick = (item) => {
     setCity(item.display_name);
     setCoords([parseFloat(item.lat), parseFloat(item.lon)]);
@@ -66,6 +75,7 @@ function CityMap() {
       );
       const data = await res.json();
       if (data && data.length > 0) {
+        console.log(data,data[0],data[1])
         setCoords([parseFloat(data[0].lat), parseFloat(data[0].lon)]);
       } else {
         setError("City not found on map.");
@@ -81,13 +91,12 @@ function CityMap() {
       <div style={{ position: "relative" }}>
         <input
           value={city}
-          onChange={e => fetchSuggestions(e.target.value)}
+          onChange={e => handleInputChange(e.target.value)}
           placeholder="Enter city (e.g. Mumbai)"
           style={{ marginRight: 8, padding: 8, width: 200 }}
-          autoComplete="off"
+          autoComplete="on"  
         />
         <button onClick={fetchCoords} style={{ padding: 8 }}>Show on Map</button>
-        {/* Suggestion Dropdown */}
         {suggestions.length > 0 && (
           <ul style={{
             position: "absolute", left: 0, top: 38, width: 200, maxHeight: 160,
@@ -100,7 +109,8 @@ function CityMap() {
                 style={{
                   padding: "8px 12px",
                   borderBottom: "1px solid #eee",
-                  cursor: "pointer"
+                  cursor: "pointer",
+                  height:'40px',
                 }}
               >
                 {item.display_name}
@@ -111,14 +121,13 @@ function CityMap() {
       </div>
       {error && <div style={{ color: "red", margin: 8 }}>{error}</div>}
 
-      {/* Show lat/lon always */}
-      <div style={{ marginTop: 16, fontSize: 16 }}>
+      <div style={{ marginTop: '3rem', fontSize: 16 }}>
         <b>Latitude:</b> {coords[0].toFixed(5)}{" "}
         <b>Longitude:</b> {coords[1].toFixed(5)}
       </div>
 
       <div style={{ height: 400, marginTop: 24 }}>
-        <MapContainer center={coords} zoom={10} style={{ height: "100%", width: "100%" }}>
+        <MapContainer center={coords} zoom={9} style={{ height: "100%", width: "100%" }}>
           <ChangeMapView center={coords} />
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
