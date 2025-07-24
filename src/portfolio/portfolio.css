@@ -1,0 +1,39 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: aqua;
+}
+
+.resume-page{
+    min-width: 60%;
+    background-color: silver;
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.header{
+    background-color: blueviolet;
+    margin-bottom: 5;
+}
+.contactlist{
+    display: flex;
+    flex-direction: row;
+    min-width: 60%;
+     justify-content: space-between; /* Or use space-evenly for equal gaps */
+      align-items: center;
+    background-color: rgb(255, 255, 255);
+    margin-top: 0;
+    box-shadow: 2px 2px 8px #eee;
+    border-top: 4px solid #222;     /* bold black line on top */
+    border-bottom: 4px solid #222;  /* bold black line at bottom */
+    border-radius: 10px;             /* (optional) corners little round */
+    padding: 10px 20px;  
+}
+
+.contact{
+}

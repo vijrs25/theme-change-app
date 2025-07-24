@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import CityMap from "./CityMap";
 import "./weather.css";
 
@@ -23,6 +23,31 @@ function WeatherDashboard() {
   // For in-card editing
   const [editingIdx, setEditingIdx] = useState(null);
   const [editingValue, setEditingValue] = useState("");
+
+  // Suggestions for top search bar
+  const [citySuggestions, setCitySuggestions] = useState([]);
+  const citySuggestTimeout = useRef();
+
+  // Suggestions effect for Set City input
+  useEffect(() => {
+    if (searchInput.length < 2) {
+      setCitySuggestions([]);
+      return;
+    }
+    if (citySuggestTimeout.current) clearTimeout(citySuggestTimeout.current);
+    citySuggestTimeout.current = setTimeout(async () => {
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchInput)}&addressdetails=1&limit=5`
+        );
+        const data = await res.json();
+        setCitySuggestions(data);
+      } catch {
+        setCitySuggestions([]);
+      }
+    }, 350);
+    return () => clearTimeout(citySuggestTimeout.current);
+  }, [searchInput]);
 
   // Fetch weather for all cities
   useEffect(() => {
@@ -55,6 +80,7 @@ function WeatherDashboard() {
       // If this card was selected, update selection too
       if (cities[searchTarget] === selectedCity) setSelectedCity(searchInput.trim());
       setSearchInput("");
+      setCitySuggestions([]); // clear suggestions after setting
     }
   };
 
@@ -84,23 +110,69 @@ function WeatherDashboard() {
 
         {/* Top search bar for any card */}
         <div style={{ marginBottom: 18, display: "flex", alignItems: "center", gap: 6 }}>
-          <select
-            value={searchTarget}
-            onChange={e => setSearchTarget(Number(e.target.value))}
-            style={{ fontSize: 15, padding: "3px 8px" }}
-          >
-            {cities.map((city, idx) => (
-              <option value={idx} key={idx}>
-                Card {idx + 1} ({city})
-              </option>
-            ))}
-          </select>
-          <input
-            value={searchInput}
-            onChange={e => setSearchInput(e.target.value)}
-            placeholder="Set city (e.g. Paris)"
-            style={{ padding: 8, fontSize: 15, minWidth: 120 }}
-          />
+       <select
+  value={searchTarget}
+  onChange={e => setSearchTarget(Number(e.target.value))}
+  style={{ fontSize: 15, padding: "3px 8px", maxWidth: 260, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+>
+  {cities.map((city, idx) => {
+    // Get the first word or up to the first comma
+    let shortCity = city.split(",")[0].trim();
+    // If the string is still very long, cut at first space
+    if (shortCity.length > 18) {
+      shortCity = shortCity.split(" ")[0];
+    }
+    return (
+      <option value={idx} key={idx}>
+        Card {idx + 1} ({shortCity})
+      </option>
+    );
+  })}
+</select>
+          <div style={{ position: "relative", width: 220 }}>
+            <input
+              value={searchInput}
+              onChange={e => setSearchInput(e.target.value)}
+              placeholder="Set city (e.g. Paris)"
+              style={{ padding: 8, fontSize: 15, minWidth: 120, width: "100%" }}
+              autoComplete="off"
+            />
+            {citySuggestions.length > 0 && (
+<ul style={{
+  position: "absolute",
+  left: 0,
+  top: 36,
+  width: 320,               // 👈 wider than default
+  maxWidth: 400,
+  maxHeight: 200,
+  background: "#fff",
+  border: "1px solid #ccc",
+  borderRadius: 8,
+  margin: 0,
+  padding: 0,
+  zIndex: 9999,
+  boxShadow: "0 8px 16px rgba(0,0,0,0.10)",
+  listStyle: "none",
+  overflowY: "auto"
+}}>
+                {citySuggestions.map((item, idx) => (
+                  <li key={idx}
+                      onClick={() => {
+                        setSearchInput(item.display_name);
+                        setCitySuggestions([]);
+                      }}
+                      style={{
+                        padding: "8px 12px",
+                        borderBottom: "1px solid #eee",
+                        cursor: "pointer",
+                        height: '40px',
+                      }}>
+                    {item.display_name}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
           <button
             onClick={handleSearch}
             style={{ padding: "7px 14px", fontSize: 15 }}
@@ -175,15 +247,19 @@ function WeatherDashboard() {
               return (
                 <div
                   className="weather-card"
-                  key={city}
-                  style={{
-                    border: selectedCity === city ? "2px solid #3463e6" : "",
-                    cursor: "pointer"
-                  }}
-                  onClick={() => setSelectedCity(city)}
-                >
+  key={city}
+  style={{
+    border: selectedCity === city ? "2px solid #3463e6" : "",
+    cursor: "pointer"
+  }}
+  onClick={() => {
+    setSelectedCity(city);   // Selects the card
+    setSearchTarget(idx);    // Selects the same card number in the dropdown!
+  }}
+>
                   <span className="city">{w.location.name}</span>
                   <span className="temp">{w.current.temp_c}°C</span>
+                  
                   <div className="weather-row">
                     <img
                       className="weather-icon"
@@ -210,7 +286,7 @@ function WeatherDashboard() {
 
         {/* Map Section for selected city */}
         <div className="map-section" style={{ marginTop: 32 }}>
-          <CityMap initialCity={selectedCity} />
+          <CityMap city={selectedCity} />
         </div>
       </div>
     </div>
