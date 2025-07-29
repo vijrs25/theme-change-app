@@ -1,39 +1,82 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  scrollbar-width: none;
+}
+
 .container{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: aqua;
+  width: 100%;
+  background-color: #473838;
 }
 
-.resume-page{
-    min-width: 60%;
-    background-color: silver;
-    min-height: 100vh;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.formContainer{
+  display: block;
+  margin: auto;
+  width:800px ;
 }
 
-.header{
-    background-color: blueviolet;
-    margin-bottom: 5;
+.profileHeader{
+  
+  display: block;
+  margin: auto;
+  max-width: 500px;
+  border-bottom: 5px solid #1C1C1C;
+  border-radius: 5px;
+  background-color: #c7fcfd;
 }
-.contactlist{
-    display: flex;
-    flex-direction: row;
-    min-width: 60%;
-     justify-content: space-between; /* Or use space-evenly for equal gaps */
-      align-items: center;
-    background-color: rgb(255, 255, 255);
-    margin-top: 0;
-    box-shadow: 2px 2px 8px #eee;
-    border-top: 4px solid #222;     /* bold black line on top */
-    border-bottom: 4px solid #222;  /* bold black line at bottom */
-    border-radius: 10px;             /* (optional) corners little round */
-    padding: 10px 20px;  
+.profileName{
+  display: block;
+  margin: auto;
+  max-width: 300px;
+  margin-bottom: 5px;
 }
 
-.contact{
+.profileContact  {
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+  align-items: center;
+  justify-content: space-around;
+  padding: 5px;
+}
+
+.profileTopic{
+  display: flex;
+  flex-direction: column;
+}
+
+.topic{
+  background-color: #c7fcfd;
+  padding: 10px;
+  margin: 0;
+
+}
+
+.topicHead{
+  font-size: 20px;
+  transition:250ms ;
+  height: 30px;
+  font-weight: 500;
+  color: rgb(27, 17, 2);
+}
+
+.topicHead:hover{
+  font-size: 21px;
+}
+
+.subTopicHead{
+  font-size: 18px;
+  color:rgb(1, 43, 29) ;
+  font-weight: 400;
+  margin: 10px 0;
+}
+
+.subTopicDetail{
+  font-size: 15px;
+}
+
+li{
+  list-style: inside;
+  margin-left: 10px;
 }
