@@ -4,9 +4,9 @@ import "./Navbar.css"; // Optional: for better styling
 
 const navLinks = [
   
-  { path: "/portfolio", label: "PortFolio" },
+  { path: "/", label: "PortFolio" },
   { path: "/login", label: "Login" },
-  { path: "/", label: "Weather Dashboard" },
+  { path: "/weather", label: "Weather Dashboard" },
   { path: "/theme", label: "Theme Toggle" },
  // { path: "/test-theme", label: "Test Theme Changer" },
 //   { path: "/weatherby", label: "Weather By" },

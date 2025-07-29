@@ -16,11 +16,11 @@ function App() {
       <Router>
         <Navbar /> {/* Always visible */}
         <Routes>
-          <Route path="/" element={<WeatherDashboard />} />
+          <Route path="/weather" element={<WeatherDashboard />} />
           <Route path="/theme" element={<Themetoggle />} />
           <Route path="/test-theme" element={<TestThemeChnager_A />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/Portfolio" element={<Portfolio />} />
+          <Route path="/" element={<Portfolio />} />
           <Route path="/pincity" element={<PinCity />} />
           <Route path="/fastpincity" element={<Fastpincity />} />
           <Route path="*" element={<Navigate to="/" />} />
